@@ -10,5 +10,15 @@ public class Mention {
         this.nombreMentions = nombreMentions;
     }
 
+    public Artiste getSource() {
+        return source;
+    }
 
+    public Artiste getDestination() {
+        return destination;
+    }
+
+    public int getNombreMentions() {
+        return nombreMentions;
+    }
 }
