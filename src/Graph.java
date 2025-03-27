@@ -103,28 +103,31 @@ public class Graph {
         while(!artistesArrayDeque.isEmpty()){
             Artiste artisteCourant = artistesArrayDeque.poll();
             for(Mention mention : arcsSortants(artisteCourant)){
-                Artiste artisteVoisin = mention.getDestination();
-                if(!sommetsVisites.contains(artisteVoisin)){
-                    sommetsVisites.add(artisteVoisin);
-                    cheminInverseArtistes.put(artisteVoisin,mention);
-                    if(artisteVoisin.equals(artisteDestination)){
+                Artiste voisin = mention.getDestination();
+                if(!sommetsVisites.contains(voisin)){
+                    sommetsVisites.add(voisin);
+                    cheminInverseArtistes.put(voisin,mention);
+                    if(voisin.equals(artisteDestination)){
                         List<String> cheminOutput = new ArrayList<>();
                         Artiste artisteActuel = artisteDestination;
+                        double cout = 0;
                         while(!artisteActuel.equals(artisteSource)){
                             Mention m = cheminInverseArtistes.get(artisteActuel);
-                            cheminOutput.add(0,artisteActuel.toString());
+                            cout += 1.0/m.getNombreMentions();
+                            cheminOutput.addFirst(artisteActuel.toString());
                             artisteActuel = m.getSource();
                         }
 
-                        cheminOutput.add(0,artisteSource.toString());
+                        cheminOutput.addFirst(artisteSource.toString());
 
                         System.out.println("Longueur du chemin : " + (cheminOutput.size()-1 ));
+                        System.out.println("Coût total du chemin : " + cout);
                         for (String s : cheminOutput) {
                             System.out.println(s+ "\n" );
                         }
                         return;
                     }
-                    artistesArrayDeque.add(artisteVoisin);
+                    artistesArrayDeque.add(voisin);
                 }
             }
         }
