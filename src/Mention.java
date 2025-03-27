@@ -4,7 +4,7 @@ public class Mention {
     private Artiste destination;
     private int nombreMentions;
 
-    public Mention(Artiste destination, Artiste source, int nombreMentions) {
+    public Mention(Artiste source, Artiste destination, int nombreMentions) {
         this.source = source;
         this.destination = destination;
         this.nombreMentions = nombreMentions;

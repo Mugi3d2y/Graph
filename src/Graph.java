@@ -43,16 +43,16 @@ public class Graph {
                 while ((line = br.readLine()) != null) {
                     String[] parts = line.split(",");
                     if (parts.length == 3) {
-                        int nomSource = Integer.parseInt(parts[0].trim());
-                        int nomCible = Integer.parseInt(parts[1].trim());
-                        int texteMention = Integer.parseInt(parts[2].trim());
+                        int idSource = Integer.parseInt(parts[0].trim());
+                        int idDestination = Integer.parseInt(parts[1].trim());
+                        int nbMentions = Integer.parseInt(parts[2].trim());
 
                         // Trouver les artistes correspondants
-                        Artiste source = getArtisteById(nomSource);
-                        Artiste cible = getArtisteById(nomCible);
+                        Artiste source = getArtisteById(idSource);
+                        Artiste destination = getArtisteById(idDestination);
 
-                        if (source != null && cible != null) {
-                            Mention mention = new Mention(source, cible, texteMention); // Nouveau constructeur
+                        if (source != null && destination != null) {
+                            Mention mention = new Mention(source, destination, nbMentions); // Nouveau constructeur
                             liensDArtistes.get(source).add(mention);
                         }
                     }
@@ -88,24 +88,47 @@ public class Graph {
         return liensDArtistes.get(a);
     }
 
-    public List<String> trouverCheminLePlusCourt(String a1, String a2){
+    public void trouverCheminLePlusCourt(String a1, String a2){
+        Artiste artisteSource = getArtistByName(a1.trim());
+        Artiste artisteDestination = getArtistByName(a2.trim());
+        if(artisteDestination == null || artisteSource == null)
+            throw new IllegalArgumentException("Un des artistes n'existe pas : " + a1 + " ou " + a2);
+
         ArrayDeque<Artiste> artistesArrayDeque = new ArrayDeque<>();
         HashMap<Artiste, Mention> cheminInverseArtistes = new HashMap<>();
         Set<Artiste> sommetsVisites = new HashSet<>();
 
-        Artiste artisteSource = getArtistByName(a1);
-        Artiste artisteDestination = getArtistByName(a2);
-        List<String> listeDArcs = new ArrayList<>();
-        listeDArcs.add(artisteSource.toString());
-
-        Set<Mention> listeMentions = arcsSortants(artisteSource);
+        artistesArrayDeque.add(artisteSource);
         sommetsVisites.add(artisteSource);
-        for (Mention mention : listeMentions) {
-            if(!mention.getDestination().equals(artisteDestination)){
+        while(!artistesArrayDeque.isEmpty()){
+            Artiste artisteCourant = artistesArrayDeque.poll();
+            for(Mention mention : arcsSortants(artisteCourant)){
+                Artiste artisteVoisin = mention.getDestination();
+                if(!sommetsVisites.contains(artisteVoisin)){
+                    sommetsVisites.add(artisteVoisin);
+                    cheminInverseArtistes.put(artisteVoisin,mention);
+                    if(artisteVoisin.equals(artisteDestination)){
+                        List<String> cheminOutput = new ArrayList<>();
+                        Artiste artisteActuel = artisteDestination;
+                        while(!artisteActuel.equals(artisteSource)){
+                            Mention m = cheminInverseArtistes.get(artisteActuel);
+                            cheminOutput.add(0,artisteActuel.toString());
+                            artisteActuel = m.getSource();
+                        }
 
+                        cheminOutput.add(0,artisteSource.toString());
+
+                        System.out.println("Longueur du chemin : " + (cheminOutput.size()-1 ));
+                        for (String s : cheminOutput) {
+                            System.out.println(s+ "\n" );
+                        }
+                        return;
+                    }
+                    artistesArrayDeque.add(artisteVoisin);
+                }
             }
         }
-        return null;
+        throw new IllegalArgumentException("Aucun chemin entre " + a1 + " et " + a2);
     }
 
 

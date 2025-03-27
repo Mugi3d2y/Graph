@@ -30,12 +30,12 @@ public class Artiste {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Artiste artiste = (Artiste) o;
-        return Objects.equals(nom, artiste.nom);
+        return this.id == artiste.id;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(nom);
+        return Objects.hashCode(id);
     }
 
     public String toString(){
