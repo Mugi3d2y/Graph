@@ -1,6 +1,6 @@
 import java.util.Objects;
 
-public class Artiste {
+public class Artiste implements Comparable<Artiste>{
 
     private int id;
     private String nom;
@@ -19,10 +19,22 @@ public class Artiste {
 
     private String categorie;
 
+    private double cout;
+
     public Artiste(int id, String nom, String categorie) {
         this.id = id;
         this.nom = nom;
         this.categorie = categorie;
+        this.cout = Double.POSITIVE_INFINITY;
+
+    }
+
+    public double getCout() {
+        return cout;
+    }
+
+    public void setCout(double cout) {
+        this.cout = cout;
     }
 
     @Override
@@ -40,5 +52,9 @@ public class Artiste {
 
     public String toString(){
         return this.nom + " (" + this.categorie +  ")";
+    }
+
+    public int compareTo(Artiste a){
+        return Double.compare(this.cout, a.cout);
     }
 }

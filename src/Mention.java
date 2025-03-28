@@ -1,4 +1,4 @@
-public class Mention {
+public class Mention{
 
     private Artiste source;
     private Artiste destination;
