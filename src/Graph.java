@@ -28,8 +28,8 @@ public class Graph{
                         int id = Integer.parseInt(parts[0].trim());
                         String nom = parts[1].trim();
                         String categorie = parts[2].trim();
-                        Artiste artiste = new Artiste(id, nom, categorie); // Constructeur Artiste(nom, categorie)
-                        liensDArtistes.put(artiste, new HashSet<>());// Initialiser l'ensemble de mentions
+                        Artiste artiste = new Artiste(id, nom, categorie);
+                        liensDArtistes.put(artiste, new HashSet<>());
                         listeArtistes.put(id,artiste);
                         nomsArtistes.put(nom,artiste);
 
@@ -39,7 +39,7 @@ public class Graph{
                 e.printStackTrace();
             }
 
-            // Lire les mentions et ajouter les relations
+
             try (BufferedReader br = new BufferedReader(new FileReader(mentionFile))) {
                 String line;
                 while ((line = br.readLine()) != null) {
@@ -49,12 +49,12 @@ public class Graph{
                         int idDestination = Integer.parseInt(parts[1].trim());
                         int nbMentions = Integer.parseInt(parts[2].trim());
 
-                        // Trouver les artistes correspondants
+
                         Artiste source = getArtisteById(idSource);
                         Artiste destination = getArtisteById(idDestination);
 
                         if (source != null && destination != null) {
-                            Mention mention = new Mention(source, destination, nbMentions); // Nouveau constructeur
+                            Mention mention = new Mention(source, destination, nbMentions);
                             liensDArtistes.get(source).add(mention);
                         }
                     }
@@ -84,15 +84,10 @@ public class Graph{
         liensDArtistes.get(a).add(m);
     }
 
-    // Complexité: ?
+    // Complexité: O(1)
     public Set<Mention> arcsSortants(Artiste a) {
         //à compléter
         return liensDArtistes.get(a);
-    }
-
-    public Set<Mention> arcsSortantsTries(Artiste a){
-        TreeSet<Mention> mentionsTries = new TreeSet<>(liensDArtistes.get(a));
-        return mentionsTries;
     }
 
 
@@ -150,13 +145,11 @@ public class Graph{
         if(source == null || destination == null) throw new IllegalArgumentException("Les artistes : " + a1 + " ou " + a2 + " n'existent pas.");
 
         PriorityQueue<Artiste> mentionArtistes = new PriorityQueue<>();
-        Set<Artiste> artistesVisites = new HashSet<>();
         HashMap<Artiste, Mention> cheminInverse = new HashMap<>();
 
 
         source.setCout(0);
         mentionArtistes.add(source);
-        artistesVisites.add(source);
         while (!mentionArtistes.isEmpty()){
             Artiste a = mentionArtistes.poll();
             for (Mention m : arcsSortants(a)){
