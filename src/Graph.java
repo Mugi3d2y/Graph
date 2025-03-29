@@ -130,8 +130,9 @@ public class Graph{
 
                         System.out.println("Longueur du chemin : " + (cheminOutput.size()-1 ));
                         System.out.println("Coût total du chemin : " + cout);
+                        System.out.println("Chemin : \n");
                         for (String s : cheminOutput) {
-                            System.out.println(s+ "\n" );
+                            System.out.println(s+ "\r" );
                         }
                         return;
                     }
@@ -149,7 +150,6 @@ public class Graph{
         if(source == null || destination == null) throw new IllegalArgumentException("Les artistes : " + a1 + " ou " + a2 + " n'existent pas.");
 
         PriorityQueue<Artiste> mentionArtistes = new PriorityQueue<>();
-        HashMap<Artiste, Integer> coutParArtiste = new HashMap<>();
         Set<Artiste> artistesVisites = new HashSet<>();
         HashMap<Artiste, Mention> cheminInverse = new HashMap<>();
 
@@ -157,37 +157,34 @@ public class Graph{
         source.setCout(0);
         mentionArtistes.add(source);
         artistesVisites.add(source);
-        coutParArtiste.put(source,0);
         while (!mentionArtistes.isEmpty()){
             Artiste a = mentionArtistes.poll();
             for (Mention m : arcsSortants(a)){
                 Artiste voisin = m.getDestination();
-                voisin.setCout(source.getCout()+(1.0/m.getNombreMentions()));
-                coutParArtiste.put(voisin,m.getNombreMentions());
-                if(!artistesVisites.contains(voisin)){
-                    artistesVisites.add(voisin);
-                    cheminInverse.put(voisin, m);
-                    if(voisin.equals(destination)){
-                        List<String> affichage = new ArrayList<>();
-                        Artiste actuel = destination;
-                        while (!actuel.equals(source)){
-                            Mention mention = cheminInverse.get(actuel);
-                            affichage.addFirst(actuel.toString());
-                            actuel = mention.getSource();
-                        }
-                        affichage.addFirst(source.toString());
-
-                        System.out.println("Longueur du chemin : " + (affichage.size() - 1));
-                        System.out.println("Cout total du chemin : " + destination.getCout());
-                        for (String s : affichage){
-                            System.out.println(s + "\n");
-                        }
-                        return;
-                    }
+                double nouveauCout = a.getCout() + (1.0/m.getNombreMentions());
+                if(nouveauCout<voisin.getCout()){
+                    voisin.setCout(nouveauCout);
+                    cheminInverse.put(voisin,m);
                     mentionArtistes.add(voisin);
                 }
             }
         }
-        throw new IllegalArgumentException("Aucun chemin entre " + a1 + " et " + a2);
+        if(!cheminInverse.containsKey(destination)) throw new IllegalArgumentException("Aucun chemin entre " + a1 + " et " + a2);
+
+        List<String> affichage = new ArrayList<>();
+        Artiste actuel = destination;
+        while (!actuel.equals(source)){
+            affichage.addFirst(actuel.toString());
+            actuel = cheminInverse.get(actuel).getSource();
+        }
+        affichage.addFirst(source.toString());
+
+        System.out.println("Longueur du chemin : " + (affichage.size() - 1));
+        System.out.println("Cout total du chemin : " + destination.getCout());
+        System.out.println("Chemin : \n");
+        for (String s : affichage){
+            System.out.println(s + "\r");
+        }
+        return;
     }
 }
