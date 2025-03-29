@@ -171,7 +171,7 @@ public class Graph{
         }
         if(!cheminInverse.containsKey(destination)) throw new IllegalArgumentException("Aucun chemin entre " + a1 + " et " + a2);
 
-        List<String> affichage = new ArrayList<>();
+        LinkedList<String> affichage = new LinkedList<>();
         Artiste actuel = destination;
         while (!actuel.equals(source)){
             affichage.addFirst(actuel.toString());
